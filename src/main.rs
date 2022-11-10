@@ -74,7 +74,7 @@ fn show(events: Vec<GHEvent>) {
     }
 }
 
-fn scrape_data(project: String) {
+fn scrape_data(project: String) -> Vec<GHEvent> {
     let mut events: Vec<GHEvent> = Vec::new();
 
     let issues = api_call(["/repos", &project, "issues"].join("/"));
@@ -130,12 +130,38 @@ fn scrape_data(project: String) {
 
     // sort events by date
     events.sort_by(|a, b| a.when.timestamp().partial_cmp(&b.when.timestamp()).unwrap());
-    show(events);
+    return events;
+}
+
+fn generate_json(events: &Vec<GHEvent>) -> String {
+    let mut data = json::JsonValue::new_array();
+    for x in events.iter() {
+        let mut tuple = json::JsonValue::new_object();
+
+        let url = x.url.clone();
+        let who = x.who.clone();
+        let when = x.when.clone();
+        let what = x.what.clone();
+        let category = x.category.clone();
+
+        tuple["url"] = url.into();
+        tuple["when"] = when.to_string().into();
+        tuple["who"] = who.into();
+        tuple["category"] = category.into();
+        tuple["what"] = what.into();
+        data.push(tuple).expect("error creating JSON");
+    }
+    return data.dump();
 }
 
 fn main() {
     let args: Vec<_> = env::args().collect();
     if args.len() > 1 {
-        scrape_data(args[1].to_string());
+        let events: Vec<GHEvent> = scrape_data(args[1].to_string());
+        if args.contains(&"--json".to_string()) {
+            println!("{}", generate_json(&events));
+        } else {
+            show(events);
+        }
     }
 }
