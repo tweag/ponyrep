@@ -1,4 +1,4 @@
-# Ponyrep
+# Ponyrep 🌈🎠
 
 Generate a daily log of a GitHub repository activity
 
