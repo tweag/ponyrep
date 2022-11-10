@@ -1,8 +1,23 @@
 use chrono::{DateTime, Utc};
+use clap::Parser;
 use colored::*;
 use json;
 use std::env;
 use std::process::Command;
+
+#[derive(Parser)]
+struct Cli {
+    #[arg(short, long)]
+    json: bool,
+
+    #[arg(short, long, value_name = "width")]
+    wrap: Option<usize>,
+
+    #[arg(short, long, value_name = "description lines")]
+    lines: Option<usize>,
+
+    format: String,
+}
 
 struct GHEvent {
     who: String,
@@ -44,7 +59,7 @@ fn api_call(path: String) -> json::JsonValue {
     return json;
 }
 
-fn show(events: Vec<GHEvent>) {
+fn show(events: Vec<GHEvent>, wrap_size: usize, lines: usize) {
     // we need to track the current date being displayed
     let mut date = String::new();
 
@@ -68,8 +83,18 @@ fn show(events: Vec<GHEvent>) {
             x.url.blue(),
         );
 
-        for line in textwrap::wrap(&x.what, 80) {
-            println!("\t{}", line);
+        let text = textwrap::wrap(&x.what, wrap_size);
+        // display entire text
+        if lines == 0 {
+            for line in textwrap::wrap(&x.what, wrap_size) {
+                println!("\t{}", line);
+            }
+        // only display n lines of the text
+        } else {
+            let min = lines.min(text.len());
+            for i in 0..min {
+                println!("\t{}", text[i]);
+            }
         }
     }
 }
@@ -172,11 +197,24 @@ fn generate_json(events: &Vec<GHEvent>) -> String {
 fn main() {
     let args: Vec<_> = env::args().collect();
     if args.len() > 1 {
+        let cli = Cli::parse();
+
         let events: Vec<GHEvent> = scrape_data(args[1].to_string());
-        if args.contains(&"--json".to_string()) {
+
+        if cli.json {
             println!("{}", generate_json(&events));
         } else {
-            show(events);
+            let mut wrap_value = 80;
+            let mut lines_value = 0;
+
+            if cli.wrap != None {
+                wrap_value = cli.wrap.unwrap();
+            }
+            if cli.lines != None {
+                lines_value = cli.lines.unwrap();
+            }
+
+            show(events, wrap_value, lines_value);
         }
     }
 }
