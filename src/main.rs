@@ -77,11 +77,11 @@ fn show(events: Vec<GHEvent>, wrap_size: usize, lines: usize) {
             date = current_date;
         }
         println!(
-            "\n{:05} {} {}\n{}",
-            x.when.format("%H:%M").to_string().bold().green(),
-            x.who.bold().blue(),
-            x.category.bold().red(),
-            x.url.blue(),
+            "\n{when:05} {who} {category}\n{url}",
+            when = x.when.format("%H:%M").to_string().bold().green(),
+            who = x.who.bold().blue(),
+            category = x.category.bold().red(),
+            url = x.url.blue(),
         );
 
         let text = textwrap::wrap(&x.what, wrap_size);
