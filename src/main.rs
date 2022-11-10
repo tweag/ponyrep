@@ -10,10 +10,10 @@ struct Cli {
     #[arg(short, long)]
     json: bool,
 
-    #[arg(short, long, value_name = "width")]
+    #[arg(short, long, value_name = "wrapping width")]
     wrap: Option<usize>,
 
-    #[arg(short, long, value_name = "description lines")]
+    #[arg(short, long, value_name = "limit text lines per entry")]
     lines: Option<usize>,
 
     format: String,
