@@ -30,6 +30,7 @@
               cargo
               clang
               rustfmt
+              rust-analyzer
             ];
           };
         }
