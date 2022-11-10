@@ -61,14 +61,14 @@ fn show(events: Vec<GHEvent>) {
             date = current_date;
         }
         println!(
-            "\n{:05} {} {} {}",
+            "\n{:05} {} {}\n{}",
             x.when.format("%H:%M").to_string().bold().green(),
             x.who.bold().blue(),
             x.category.bold().red(),
             x.url.blue(),
         );
 
-        for line in textwrap::wrap(&x.what, 60) {
+        for line in textwrap::wrap(&x.what, 80) {
             println!("\t{}", line);
         }
     }
