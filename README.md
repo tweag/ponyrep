@@ -36,3 +36,4 @@ A list of ideas to add to ponyrep
 - a way to give a custom formatting string
 - handle PRs
 - handle commits?
+- break the limit of 100 last entries, which is very small for projects like nixos/nixpkgs
