@@ -30,4 +30,3 @@ A list of ideas to add to ponyrep
 - a way to give a custom formatting string
 - handle PRs
 - handle commits?
-- first comment of an issue is skipped because it's considered a new issue and we only retain the title

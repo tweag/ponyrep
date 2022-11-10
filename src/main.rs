@@ -82,8 +82,6 @@ fn scrape_data(project: String) -> Vec<GHEvent> {
 
     // iterate over issues
     for i in 0..issues.len() {
-        let text = issues[i]["title"].to_string();
-
         let state = issues[i]["state"].to_string();
         let field;
 
@@ -93,15 +91,32 @@ fn scrape_data(project: String) -> Vec<GHEvent> {
             field = "updated_at";
         }
 
+        // create an issue for the title
         let v = GHEvent {
             who: issues[i]["user"]["login"].to_string(),
             when: DateTime::parse_from_rfc3339(&issues[i][field].to_string())
                 .unwrap()
                 .with_timezone(&Utc),
-            what: text,
+            what: issues[i]["title"].to_string(),
             category: format!(
                 "{} {}",
                 state.to_uppercase(),
+                &issues[i]["number"].to_string()
+            ),
+            url: issues[i]["url"].to_string(),
+        };
+        events.push(v);
+
+        // create an issue with the comment
+        let v = GHEvent {
+            who: issues[i]["user"]["login"].to_string(),
+            when: DateTime::parse_from_rfc3339(&issues[i]["created_at"].to_string())
+                .unwrap()
+                .with_timezone(&Utc),
+            what: issues[i]["body"].to_string(),
+            category: format!(
+                "{} {}",
+                "OPEN".to_string(),
                 &issues[i]["number"].to_string()
             ),
             url: issues[i]["url"].to_string(),
