@@ -16,6 +16,7 @@ struct Cli {
     #[arg(short, long, value_name = "limit text lines per entry")]
     lines: Option<usize>,
 
+    #[arg(value_name = "organization/project")]
     format: String,
 }
 
