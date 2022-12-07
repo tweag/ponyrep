@@ -129,7 +129,7 @@ fn scrape_data(project: String) -> Vec<GHEvent> {
                 state.to_uppercase(),
                 &issues[i]["number"].to_string()
             ),
-            url: issues[i]["url"].to_string(),
+            url: issues[i]["html_url"].to_string(),
         };
         events.push(v);
 
@@ -145,7 +145,7 @@ fn scrape_data(project: String) -> Vec<GHEvent> {
                 "OPEN".to_string(),
                 &issues[i]["number"].to_string()
             ),
-            url: issues[i]["url"].to_string(),
+            url: issues[i]["html_url"].to_string(),
         };
         events.push(v);
     }
@@ -164,7 +164,7 @@ fn scrape_data(project: String) -> Vec<GHEvent> {
                 .with_timezone(&Utc),
             what: text,
             category: format!("{} {}", "comment", &issue_number),
-            url: comments[i]["url"].to_string(),
+            url: comments[i]["html_url"].to_string(),
         };
         events.push(v);
     }
