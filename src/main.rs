@@ -197,25 +197,23 @@ fn generate_json(events: &Vec<GHEvent>) -> String {
 
 fn main() {
     let args: Vec<_> = env::args().collect();
-    if args.len() > 1 {
-        let cli = Cli::parse();
+    let cli = Cli::parse();
 
-        let events: Vec<GHEvent> = scrape_data(args[1].to_string());
+    let events: Vec<GHEvent> = scrape_data(args[1].to_string());
 
-        if cli.json {
-            println!("{}", generate_json(&events));
-        } else {
-            let mut wrap_value = 80;
-            let mut lines_value = 0;
+    if cli.json {
+        println!("{}", generate_json(&events));
+    } else {
+        let mut wrap_value = 80;
+        let mut lines_value = 0;
 
-            if cli.wrap != None {
-                wrap_value = cli.wrap.unwrap();
-            }
-            if cli.lines != None {
-                lines_value = cli.lines.unwrap();
-            }
-
-            show(events, wrap_value, lines_value);
+        if cli.wrap != None {
+            wrap_value = cli.wrap.unwrap();
         }
+        if cli.lines != None {
+            lines_value = cli.lines.unwrap();
+        }
+
+        show(events, wrap_value, lines_value);
     }
 }
